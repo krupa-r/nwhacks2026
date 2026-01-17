@@ -3,7 +3,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #ffffff 0%, #b3d9ff 50%, #549eff 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #b3d9ff 50%, #ffffff 100%);
   padding: 20px;
 }
 

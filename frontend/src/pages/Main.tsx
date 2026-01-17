@@ -7,7 +7,7 @@ const Main: React.FC = () => {
       <div className="main-content">
         <h1 className="main-title">Main Page</h1>
         <p className="main-description">
-          Welcome to the main page. This is where users can ask their emergency health related questions.
+		Get fast, reliable guidance for urgent health concerns and understand your next steps.
         </p>
       </div>
     </div>
