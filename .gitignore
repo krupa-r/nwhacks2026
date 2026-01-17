@@ -1,0 +1,49 @@
+# ======================
+# Dependencies
+# ======================
+node_modules/
+
+# ======================
+# Build outputs
+# ======================
+dist/
+build/
+
+# ======================
+# Environment variables
+# ======================
+.env
+.env.local
+.env.*.local
+
+# ======================
+# Logs
+# ======================
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# ======================
+# OS / Editor junk
+# ======================
+.DS_Store
+Thumbs.db
+
+.vscode/
+.idea/
+
+# ======================
+# Runtime / cache
+# ======================
+.cache/
+.tmp/
+.eslintcache
+
+# ======================
+# Python 
+# ======================
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.env/
