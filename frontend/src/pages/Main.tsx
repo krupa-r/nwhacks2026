@@ -3,7 +3,7 @@ import '../styles/Main.css';
 
 interface Message {
   role: 'assistant' | 'user';
-  content: string | React.ReactNode;
+  content: string;
 }
 
 const Main: React.FC = () => {
@@ -14,6 +14,8 @@ const Main: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showChat, setShowChat] = useState(true);
   const [showMaps, setShowMaps] = useState(false);
+  const [categoryChosen, setCategoryChosen] = useState<string | null>(null);
+  const [isMuted, setIsMuted] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -23,6 +25,24 @@ const Main: React.FC = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // Voice synthesis for assistant responses
+  useEffect(() => {
+    if (messages.length === 0) return;
+    const lastMsg = messages[messages.length - 1];
+    if (lastMsg.role === 'assistant' && lastMsg.content && !isMuted) {
+      if ('speechSynthesis' in window) {
+        const utter = new window.SpeechSynthesisUtterance(lastMsg.content);
+        utter.rate = 1;
+        utter.pitch = 1;
+        utter.lang = 'en-US';
+        window.speechSynthesis.cancel(); // Stop any previous speech
+        window.speechSynthesis.speak(utter);
+      }
+    } else if (isMuted && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
+  }, [messages, isMuted]);
 
   const sendMessage = async () => {
     if (!inputValue.trim() || isLoading) return;
@@ -49,6 +69,7 @@ const Main: React.FC = () => {
         role: 'assistant',
         content: data.long_paragraph || 'I received your message. Backend response pending.',
       };
+      setMessages((prev) => [...prev, assistantMessage]);
 
     // Second message (key words with bullet points)
         const keywordsMessage: Message = {
@@ -73,6 +94,31 @@ const Main: React.FC = () => {
         content: 'Sorry, there was an error connecting to the server. Please try again.',
       };
       setMessages((prev) => [...prev, errorMessage]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleCategoryClick = async (category: string) => {
+    setCategoryChosen(category);
+    setIsLoading(true);
+    try {
+      const API_URL = process.env.REACT_APP_API_URL;
+      const response = await fetch(`${API_URL}/geminitest`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userInput: category }),
+      });
+      const data = await response.json();
+      const assistantMessage: Message = {
+        role: 'assistant',
+        content: data.long_paragraph || 'I received your message. Backend response pending.',
+      };
+      setMessages((prev) => [...prev, { role: 'user', content: category }, assistantMessage]);
+    } catch (error) {
+      setMessages((prev) => [...prev, { role: 'assistant', content: 'Sorry, there was an error connecting to the server. Please try again.' }]);
     } finally {
       setIsLoading(false);
     }
@@ -105,6 +151,35 @@ const Main: React.FC = () => {
   // Maps logic
   const [address, setAddress] = useState('');
   const [showDirections, setShowDirections] = useState(false);
+  const [userCoords, setUserCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [locationTried, setLocationTried] = useState(false);
+
+  // Try to get user location when Locations tab is opened
+  useEffect(() => {
+    if (showMaps && !locationTried && !showDirections && !userCoords) {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            setUserCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+            setShowDirections(true);
+            setLocationTried(true);
+          },
+          () => {
+            setLocationTried(true);
+          }
+        );
+      } else {
+        setLocationTried(true);
+      }
+    }
+    // Reset on close
+    if (!showMaps) {
+      setShowDirections(false);
+      setUserCoords(null);
+      setLocationTried(false);
+      setAddress('');
+    }
+  }, [showMaps, locationTried, showDirections, userCoords]);
 
   const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAddress(e.target.value);
@@ -114,13 +189,22 @@ const Main: React.FC = () => {
     e.preventDefault();
     if (address.trim()) {
       setShowDirections(true);
+      setUserCoords(null);
     }
   };
 
+  const handleEditAddress = () => {
+    setShowDirections(false);
+    setUserCoords(null);
+  };
+
   let mapSrc = '';
-  if (showDirections && address.trim()) {
-    // This will show directions from the address to the nearest hospital
-    mapSrc = `https://www.google.com/maps?saddr=${encodeURIComponent(address)}&daddr=hospital+near+${encodeURIComponent(address)}&output=embed`;
+  if (showDirections) {
+    if (userCoords) {
+      mapSrc = `https://www.google.com/maps?saddr=${userCoords.lat},${userCoords.lng}&daddr=hospital&output=embed`;
+    } else if (address.trim()) {
+      mapSrc = `https://www.google.com/maps?saddr=${encodeURIComponent(address)}&daddr=hospital+near+${encodeURIComponent(address)}&output=embed`;
+    }
   }
 
   return (
@@ -148,8 +232,19 @@ const Main: React.FC = () => {
           <div className="chat-container">
             <div className="chat-content">
             <div className="chat-messages">
+              {/* Category selection buttons at the top if not chosen yet */}
+              {!categoryChosen && (
+                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '32px 0' }}>
+                  <div style={{ fontWeight: 600, marginBottom: 16 }}>What is your main concern?</div>
+                  <div style={{ display: 'flex', gap: 16 }}>
+                  <button onClick={() => handleCategoryClick('shortness of breath')} style={{ padding: '12px 24px', fontSize: 16, borderRadius: 8, border: '1px solid #4c81b9', background: '#eaf3fb', cursor: 'pointer' }}>Shortness of Breath</button>
+                  <button onClick={() => handleCategoryClick('chest pain')} style={{ padding: '12px 24px', fontSize: 16, borderRadius: 8, border: '1px solid #4c81b9', background: '#eaf3fb', cursor: 'pointer' }}>Chest Pain</button>
+                  <button onClick={() => handleCategoryClick('continuous bleeding')} style={{ padding: '12px 24px', fontSize: 16, borderRadius: 8, border: '1px solid #4c81b9', background: '#eaf3fb', cursor: 'pointer' }}>Continuous Bleeding</button>
+                </div>
+				</div>
+              )}
               {messages.map((message, index) => (
-                <div key={index} className={`message ${message.role}-message`}>
+                <div key={index} className={`message ${message.role}-message`} style={{ position: 'relative' }}>
                   <div className="message-content">{message.content}</div>
                 </div>
               ))}
@@ -167,6 +262,25 @@ const Main: React.FC = () => {
               <div ref={messagesEndRef} />
             </div>
             <div className="chat-input-container">
+              {/* Mute/unmute button above the text input bar */}
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 8 }}>
+                <button
+                  onClick={() => setIsMuted((m) => !m)}
+                  style={{
+                    padding: '6px 18px',
+                    borderRadius: 8,
+                    border: '1px solid #4c81b9',
+                    background: isMuted ? '#fbeaea' : '#eaf3fb',
+                    color: '#222',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    fontSize: 15
+                  }}
+                  aria-label={isMuted ? 'Unmute voice' : 'Mute voice'}
+                >
+                  {isMuted ? 'Unmute' : 'Mute'}
+                </button>
+              </div>
               <div className="chat-input-wrapper">
                 <textarea
                   className="chat-input"
@@ -219,7 +333,7 @@ const Main: React.FC = () => {
           </div>
           <div className="maps-container">
             <div className="maps-content">
-              {!showDirections && (
+              {!showDirections && (!userCoords || locationTried) && (
                 <form onSubmit={handleAddressSubmit} style={{ marginBottom: 20 }}>
                   <label>
                     Enter your address:
@@ -234,17 +348,27 @@ const Main: React.FC = () => {
                   <button type="submit" style={{ marginLeft: 8 }}>Get Directions</button>
                 </form>
               )}
-              {showDirections && (
-                <iframe
-                  title="Directions to Nearest Hospital"
-                  src={mapSrc}
-                  width="100%"
-                  height="450"
-                  style={{ border: 0, marginTop: 20 }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                ></iframe>
+              {showDirections && mapSrc && (
+                <>
+                  <iframe
+                    title="Directions to Nearest Hospital"
+                    src={mapSrc}
+                    width="100%"
+                    height="450"
+                    style={{ border: 0, marginTop: 20 }}
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  ></iframe>
+                  {!userCoords && (
+                    <button onClick={handleEditAddress} style={{ marginTop: 16, padding: '8px 20px', borderRadius: 6, border: '1px solid #4c81b9', background: '#f5faff', cursor: 'pointer' }}>
+                      Edit Address
+                    </button>
+                  )}
+                </>
+              )}
+              {!showDirections && !locationTried && (
+                <p>Detecting your location...</p>
               )}
             </div>
           </div>
