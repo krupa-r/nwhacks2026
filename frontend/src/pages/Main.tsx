@@ -15,6 +15,7 @@ const Main: React.FC = () => {
   const [showChat, setShowChat] = useState(true);
   const [showMaps, setShowMaps] = useState(false);
   const [categoryChosen, setCategoryChosen] = useState<string | null>(null);
+  const [isMuted, setIsMuted] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -29,7 +30,7 @@ const Main: React.FC = () => {
   useEffect(() => {
     if (messages.length === 0) return;
     const lastMsg = messages[messages.length - 1];
-    if (lastMsg.role === 'assistant' && lastMsg.content) {
+    if (lastMsg.role === 'assistant' && lastMsg.content && !isMuted) {
       if ('speechSynthesis' in window) {
         const utter = new window.SpeechSynthesisUtterance(lastMsg.content);
         utter.rate = 1;
@@ -38,8 +39,10 @@ const Main: React.FC = () => {
         window.speechSynthesis.cancel(); // Stop any previous speech
         window.speechSynthesis.speak(utter);
       }
+    } else if (isMuted && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
     }
-  }, [messages]);
+  }, [messages, isMuted]);
 
   const sendMessage = async () => {
     if (!inputValue.trim() || isLoading) return;
@@ -224,7 +227,7 @@ const Main: React.FC = () => {
 				</div>
               )}
               {messages.map((message, index) => (
-                <div key={index} className={`message ${message.role}-message`}>
+                <div key={index} className={`message ${message.role}-message`} style={{ position: 'relative' }}>
                   <div className="message-content">{message.content}</div>
                 </div>
               ))}
@@ -242,6 +245,25 @@ const Main: React.FC = () => {
               <div ref={messagesEndRef} />
             </div>
             <div className="chat-input-container">
+              {/* Mute/unmute button above the text input bar */}
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 8 }}>
+                <button
+                  onClick={() => setIsMuted((m) => !m)}
+                  style={{
+                    padding: '6px 18px',
+                    borderRadius: 8,
+                    border: '1px solid #4c81b9',
+                    background: isMuted ? '#fbeaea' : '#eaf3fb',
+                    color: '#222',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    fontSize: 15
+                  }}
+                  aria-label={isMuted ? 'Unmute voice' : 'Mute voice'}
+                >
+                  {isMuted ? 'Unmute' : 'Mute'}
+                </button>
+              </div>
               <div className="chat-input-wrapper">
                 <textarea
                   className="chat-input"
