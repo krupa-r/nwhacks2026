@@ -115,6 +115,35 @@ const Main: React.FC = () => {
   // Maps logic
   const [address, setAddress] = useState('');
   const [showDirections, setShowDirections] = useState(false);
+  const [userCoords, setUserCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [locationTried, setLocationTried] = useState(false);
+
+  // Try to get user location when Locations tab is opened
+  useEffect(() => {
+    if (showMaps && !locationTried && !showDirections && !userCoords) {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            setUserCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+            setShowDirections(true);
+            setLocationTried(true);
+          },
+          () => {
+            setLocationTried(true);
+          }
+        );
+      } else {
+        setLocationTried(true);
+      }
+    }
+    // Reset on close
+    if (!showMaps) {
+      setShowDirections(false);
+      setUserCoords(null);
+      setLocationTried(false);
+      setAddress('');
+    }
+  }, [showMaps, locationTried, showDirections, userCoords]);
 
   const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAddress(e.target.value);
@@ -124,13 +153,22 @@ const Main: React.FC = () => {
     e.preventDefault();
     if (address.trim()) {
       setShowDirections(true);
+      setUserCoords(null);
     }
   };
 
+  const handleEditAddress = () => {
+    setShowDirections(false);
+    setUserCoords(null);
+  };
+
   let mapSrc = '';
-  if (showDirections && address.trim()) {
-    // This will show directions from the address to the nearest hospital
-    mapSrc = `https://www.google.com/maps?saddr=${encodeURIComponent(address)}&daddr=hospital+near+${encodeURIComponent(address)}&output=embed`;
+  if (showDirections) {
+    if (userCoords) {
+      mapSrc = `https://www.google.com/maps?saddr=${userCoords.lat},${userCoords.lng}&daddr=hospital&output=embed`;
+    } else if (address.trim()) {
+      mapSrc = `https://www.google.com/maps?saddr=${encodeURIComponent(address)}&daddr=hospital+near+${encodeURIComponent(address)}&output=embed`;
+    }
   }
 
   return (
@@ -240,7 +278,7 @@ const Main: React.FC = () => {
           </div>
           <div className="maps-container">
             <div className="maps-content">
-              {!showDirections && (
+              {!showDirections && (!userCoords || locationTried) && (
                 <form onSubmit={handleAddressSubmit} style={{ marginBottom: 20 }}>
                   <label>
                     Enter your address:
@@ -255,17 +293,27 @@ const Main: React.FC = () => {
                   <button type="submit" style={{ marginLeft: 8 }}>Get Directions</button>
                 </form>
               )}
-              {showDirections && (
-                <iframe
-                  title="Directions to Nearest Hospital"
-                  src={mapSrc}
-                  width="100%"
-                  height="450"
-                  style={{ border: 0, marginTop: 20 }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                ></iframe>
+              {showDirections && mapSrc && (
+                <>
+                  <iframe
+                    title="Directions to Nearest Hospital"
+                    src={mapSrc}
+                    width="100%"
+                    height="450"
+                    style={{ border: 0, marginTop: 20 }}
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  ></iframe>
+                  {!userCoords && (
+                    <button onClick={handleEditAddress} style={{ marginTop: 16, padding: '8px 20px', borderRadius: 6, border: '1px solid #4c81b9', background: '#f5faff', cursor: 'pointer' }}>
+                      Edit Address
+                    </button>
+                  )}
+                </>
+              )}
+              {!showDirections && !locationTried && (
+                <p>Detecting your location...</p>
               )}
             </div>
           </div>
