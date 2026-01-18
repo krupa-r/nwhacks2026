@@ -93,7 +93,7 @@ const Landing: React.FC = () => {
 			If emergency services are available to you, <b>contact 911 or your local emergency number first</b>.
             </p>
             <p className="disclaimer-text">
-              This application is for informational purposes only and should not replace professional medical advice or emergency This assistant offers general guidance only and cannot replace a healthcare professional or emergency services.services.
+              This application is for informational purposes only and should not replace professional medical advice or emergency services. This assistant offers general guidance only and cannot replace a healthcare professional or emergency services.
             </p>
             <button className="continue-button" onClick={handleContinue}>
               Continue
