@@ -90,7 +90,7 @@ const Landing: React.FC = () => {
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <h2 className="disclaimer-title">Important Disclaimer</h2>
             <p className="disclaimer-text">
-			If emergency services are available to you, contact 911 or your local emergency number first.
+			If emergency services are available to you, <b>contact 911 or your local emergency number first</b>.
             </p>
             <p className="disclaimer-text">
               This application is for informational purposes only and should not replace professional medical advice or emergency This assistant offers general guidance only and cannot replace a healthcare professional or emergency services.services.
