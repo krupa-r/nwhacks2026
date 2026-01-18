@@ -10,24 +10,49 @@
   position: relative;
 }
 
-.icon-container {
+.icons-wrapper {
   position: absolute;
+  margin-left: 20px;
   top: 20px;
   left: 20px;
-  width: 60px;
-  height: 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 10;
+}
+
+.icon-container {
+  width: 50px;
+  height: 50px;
   background: white;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  z-index: 10;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.icon-container:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.icon-container.active {
+  box-shadow: 0 4px 12px rgba(76, 129, 185, 0.4);
+  border: 2px solid #4c81b9;
 }
 
 .needle-icon {
-  width: 130px;
-  height: 130px;
+  width: 75px;
+  height: 75px;
+  object-fit: contain;
+}
+
+.suitcase-icon {
+  width: 80px;
+  height: 80px;
   object-fit: contain;
 }
 
@@ -46,18 +71,45 @@
   border-radius: 10px;
   padding: 5px;
   margin-bottom: 10px;
-  width: 75vw;
+  width: 73vw;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .chat-container {
   display: flex;
   flex-direction: column;
-  height: 85vh;           
+  height: 75vh;           
   width: 75vw;           
   max-width: 1200px;      
   margin: 0 auto;        
   background: #ffffff;
   border-radius: 15px;
+}
+
+.chat-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+.maps-container {
+  display: flex;
+  flex-direction: column;
+  height: 75vh;           
+  width: 75vw;           
+  max-width: 1200px;      
+  margin: 0 auto;        
+  background: #ffffff;
+  border-radius: 15px;
+}
+
+.maps-content {
+  flex: 1;
+  padding: 20px;
+  overflow: hidden;
 }
 
 .chat-messages {
@@ -127,7 +179,7 @@
 }
 
 .user-message .message-content {
-  background: #007bff;
+  background: #4c81b9;
   color: white;
   border-bottom-right-radius: 4px;
 }
@@ -154,7 +206,7 @@
 
 .chat-input-wrapper:focus-within {
   box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
-  border-color: #007bff;
+  border-color:  #4c81b9;
 }
 
 .chat-input {
@@ -183,7 +235,7 @@
   height: 36px;
   border-radius: 50%;
   border: none;
-  background: #007bff;
+  background: #7db2ea;
   color: white;
   cursor: pointer;
   transition: background-color 0.2s, transform 0.1s;
