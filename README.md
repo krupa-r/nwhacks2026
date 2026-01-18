@@ -73,7 +73,7 @@ Open the following file:
 frontend/src/pages/Main.tsx
 ```
 
-Locate **line 59**, where the `fetch` request is made.
+Locate **lines 64 & 112**, where the `fetch` request is made.
 
 ### If you are using **OpenAI**
 Ensure the endpoint is set to:
