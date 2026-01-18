@@ -46,13 +46,34 @@ const Landing: React.FC = () => {
         <img src="/image/Suitcase.png" alt="Suitcase" className="bg-image suitcase-bg" />
         <img src="/image/Suitcase.png" alt="Suitcase" className="bg-image suitcase-bg" />
       </div>
-      <div className="landing-images">
+      <div className="person-container">
         <img src="/image/Person.png" alt="Person" className="person-image" />
-        <img src="/image/Needle.png" alt="Needle" className="top-right-image needle-tr-1" />
-        <img src="/image/plus.png" alt="Plus" className="top-right-image plus-tr-1" />
-        <img src="/image/Suitcase.png" alt="Suitcase" className="top-right-image suitcase-tr-1" />
-        <img src="/image/Needle.png" alt="Needle" className="top-right-image needle-tr-2" />
-        <img src="/image/plus.png" alt="Plus" className="top-right-image plus-tr-2" />
+      </div>
+      <div className="landing-images">
+        <img src="/image/Needle.png" alt="Needle" className="right-image needle-right" />
+        <img src="/image/Needle.png" alt="Needle" className="right-image needle-right" />
+        <img src="/image/Needle.png" alt="Needle" className="right-image needle-right" />
+        <img src="/image/Needle.png" alt="Needle" className="right-image needle-right" />
+        <img src="/image/Needle.png" alt="Needle" className="right-image needle-right" />
+        <img src="/image/Needle.png" alt="Needle" className="right-image needle-right" />
+        <img src="/image/Needle.png" alt="Needle" className="right-image needle-right" />
+        <img src="/image/Needle.png" alt="Needle" className="right-image needle-right" />
+        <img src="/image/plus.png" alt="Plus" className="right-image plus-right" />
+        <img src="/image/plus.png" alt="Plus" className="right-image plus-right" />
+        <img src="/image/plus.png" alt="Plus" className="right-image plus-right" />
+        <img src="/image/plus.png" alt="Plus" className="right-image plus-right" />
+        <img src="/image/plus.png" alt="Plus" className="right-image plus-right" />
+        <img src="/image/plus.png" alt="Plus" className="right-image plus-right" />
+        <img src="/image/plus.png" alt="Plus" className="right-image plus-right" />
+        <img src="/image/plus.png" alt="Plus" className="right-image plus-right" />
+        <img src="/image/Suitcase.png" alt="Suitcase" className="right-image suitcase-right" />
+        <img src="/image/Suitcase.png" alt="Suitcase" className="right-image suitcase-right" />
+        <img src="/image/Suitcase.png" alt="Suitcase" className="right-image suitcase-right" />
+        <img src="/image/Suitcase.png" alt="Suitcase" className="right-image suitcase-right" />
+        <img src="/image/Suitcase.png" alt="Suitcase" className="right-image suitcase-right" />
+        <img src="/image/Suitcase.png" alt="Suitcase" className="right-image suitcase-right" />
+        <img src="/image/Suitcase.png" alt="Suitcase" className="right-image suitcase-right" />
+        <img src="/image/Suitcase.png" alt="Suitcase" className="right-image suitcase-right" />
       </div>
       <div className="landing-content">
         <h1 className="landing-title">Emergency Health Assistant</h1>
