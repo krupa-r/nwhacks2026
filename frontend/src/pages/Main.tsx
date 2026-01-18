@@ -55,8 +55,8 @@ const Main: React.FC = () => {
             role: 'assistant',
             content: (
                 <>
-                  <p>Here is a summary of the key remedies:</p>
-                  <ul>
+                  <p  style={{ marginTop: '0px' }}>Here is a summary of the key remedies:</p>
+                  <ul  style={{ marginBottom: '3px' }}>
                     {data.key_remedies.map((keyword: string, index: number) => (
                       <li key={index}>{keyword}</li>
                     ))}
