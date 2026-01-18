@@ -3,7 +3,7 @@ import '../styles/Main.css';
 
 interface Message {
   role: 'assistant' | 'user';
-  content: string;
+  content: string | React.ReactNode;
 }
 
 const Main: React.FC = () => {
@@ -49,7 +49,23 @@ const Main: React.FC = () => {
         role: 'assistant',
         content: data.long_paragraph || 'I received your message. Backend response pending.',
       };
-      setMessages((prev) => [...prev, assistantMessage]);
+
+    // Second message (key words with bullet points)
+        const keywordsMessage: Message = {
+            role: 'assistant',
+            content: (
+                <>
+                  <p>Here is a summary of the key remedies:</p>
+                  <ul>
+                    {data.key_remedies.map((keyword: string, index: number) => (
+                      <li key={index}>{keyword}</li>
+                    ))}
+                  </ul>
+                </>
+              ),
+        };
+
+      setMessages((prev) => [...prev, assistantMessage, keywordsMessage]);
     } catch (error) {
       console.error('Error fetching response:', error);
       const errorMessage: Message = {

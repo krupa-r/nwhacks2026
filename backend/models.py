@@ -1,6 +1,6 @@
 from openai import OpenAI
 import os
-# from google import genai
+from google import genai
 from dotenv import load_dotenv
 import json
 import re
@@ -15,7 +15,7 @@ def OpenAiResponse (userInput):
 
     fake_string = """{
     "long_paragraph": "...",
-    "key_words": ["...", "...", "..."]
+    "key_remedies": ["...", "...", "..."]
     }"""
 
     resp = openaiClient.chat.completions.create(
