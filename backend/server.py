@@ -1,4 +1,3 @@
-
 from fastapi import FastAPI, Request
 from models import OpenAiResponse
 from fastapi.middleware.cors import CORSMiddleware

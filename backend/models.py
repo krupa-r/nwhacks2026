@@ -1,6 +1,6 @@
 from openai import OpenAI
 import os
-from google import genai
+# from google import genai
 from dotenv import load_dotenv
 import json
 

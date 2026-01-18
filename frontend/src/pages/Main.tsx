@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import '../styles/Main.css';
 
 interface Message {
@@ -85,6 +85,27 @@ const Main: React.FC = () => {
     setShowMaps(!showMaps);
     if (showChat) setShowChat(false);
   };
+
+  // Maps logic
+  const [address, setAddress] = useState('');
+  const [showDirections, setShowDirections] = useState(false);
+
+  const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setAddress(e.target.value);
+  };
+
+  const handleAddressSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (address.trim()) {
+      setShowDirections(true);
+    }
+  };
+
+  let mapSrc = '';
+  if (showDirections && address.trim()) {
+    // This will show directions from the address to the nearest hospital
+    mapSrc = `https://www.google.com/maps?saddr=${encodeURIComponent(address)}&daddr=hospital+near+${encodeURIComponent(address)}&output=embed`;
+  }
 
   return (
     <div className="main-container">
@@ -182,7 +203,33 @@ const Main: React.FC = () => {
           </div>
           <div className="maps-container">
             <div className="maps-content">
-              {/* Google Maps will be embedded here later */}
+              {!showDirections && (
+                <form onSubmit={handleAddressSubmit} style={{ marginBottom: 20 }}>
+                  <label>
+                    Enter your address:
+                    <input
+                      type="text"
+                      value={address}
+                      onChange={handleAddressChange}
+                      style={{ marginLeft: 8, width: 300 }}
+                      required
+                    />
+                  </label>
+                  <button type="submit" style={{ marginLeft: 8 }}>Get Directions</button>
+                </form>
+              )}
+              {showDirections && (
+                <iframe
+                  title="Directions to Nearest Hospital"
+                  src={mapSrc}
+                  width="100%"
+                  height="450"
+                  style={{ border: 0, marginTop: 20 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                ></iframe>
+              )}
             </div>
           </div>
         </>
