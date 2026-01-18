@@ -1,6 +1,6 @@
 
 from fastapi import FastAPI, Request
-from models import OpenAiResponse
+from models import OpenAiResponse, GeminiResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -27,4 +27,12 @@ async def openai(request : Request):
     user_input = body["userInput"]
 
     return OpenAiResponse(userInput = user_input)
+
+@app.post("/geminitest")
+async def openai(request : Request):
+    body = await request.json()
+    user_input = body["userInput"]
+
+    return GeminiResponse(userInput = user_input)
+    
     
