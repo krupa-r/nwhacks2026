@@ -65,7 +65,8 @@ def load_docs_from_json(path: str | Path):
     print(f"loading successful at {path} in {time.perf_counter() - time_counter:.3f}s.")
     return docs
 
-BASE_DIR = Path.home() / "nwhacks2026" / "nwhacks2026" / "pubmed_data_by_topics" / "processed_json"
+REPO_ROOT = Path(__file__).resolve().parents[2]
+BASE_DIR = REPO_ROOT / "pubmed_data_by_topics" / "processed_json"
 
 
 ## load processed documentations for embedding (manual)
@@ -192,7 +193,7 @@ def route_query_to_topic(model, topics, centroids, repr_titles, topic_files, use
         })
     return routed
 
-OUT_DIR = Path.home() / "nwhacks2026" / "nwhacks2026" / "backend" / "embedding"
+OUT_DIR = Path(__file__).parent
 
 model, topics, centroids, repr_titles, topic_files = build_topic_router(BASE_DIR, "lokeshch19/ModernPubMedBERT", 300, OUT_DIR)
 
