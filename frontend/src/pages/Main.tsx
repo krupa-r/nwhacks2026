@@ -18,6 +18,12 @@ const Main: React.FC = () => {
   const [isMuted, setIsMuted] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  const [fallModalOpen, setFallModalOpen] = useState(false);
+  const [fallCountdown, setFallCountdown] = useState(60);
+  const [fallDetected, setFallDetected] = useState(false);
+  const fallTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const countdownIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -48,6 +54,60 @@ const Main: React.FC = () => {
     window.speechSynthesis.cancel();
   }
 }, [messages, isMuted]);
+
+  // Fall detection logic
+  useEffect(() => {
+    function handleMotion(event: DeviceMotionEvent) {
+      if (event.accelerationIncludingGravity) {
+        const { x, y, z } = event.accelerationIncludingGravity;
+        const magnitude = Math.sqrt((x || 0) ** 2 + (y || 0) ** 2 + (z || 0) ** 2);
+        // Threshold for fall detection (tune as needed)
+        if (magnitude > 22 && !fallDetected) {
+          setFallDetected(true);
+          setFallModalOpen(true);
+          setFallCountdown(60);
+        }
+      }
+    }
+    window.addEventListener('devicemotion', handleMotion);
+    return () => {
+      window.removeEventListener('devicemotion', handleMotion);
+    };
+  }, [fallDetected]);
+
+  // Countdown logic
+  useEffect(() => {
+    if (fallModalOpen) {
+      countdownIntervalRef.current = setInterval(() => {
+        setFallCountdown((prev) => prev - 1);
+      }, 1000);
+      fallTimeoutRef.current = setTimeout(() => {
+        setFallModalOpen(false);
+        setFallDetected(false);
+        // Simulate calling hospital
+        window.location.href = 'tel:911';
+      }, 60000);
+      return () => {
+        if (countdownIntervalRef.current) clearInterval(countdownIntervalRef.current);
+        if (fallTimeoutRef.current) clearTimeout(fallTimeoutRef.current);
+      };
+    }
+  }, [fallModalOpen]);
+
+  useEffect(() => {
+    if (fallCountdown <= 0 && fallModalOpen) {
+      setFallModalOpen(false);
+      setFallDetected(false);
+    }
+  }, [fallCountdown, fallModalOpen]);
+
+  const handleCancelFall = () => {
+    setFallModalOpen(false);
+    setFallDetected(false);
+    setFallCountdown(60);
+    if (countdownIntervalRef.current) clearInterval(countdownIntervalRef.current);
+    if (fallTimeoutRef.current) clearTimeout(fallTimeoutRef.current);
+  };
 
   const sendMessage = async () => {
     if (!inputValue.trim() || isLoading) return;
@@ -227,8 +287,41 @@ const Main: React.FC = () => {
         >
           <img src="/image/Suitcase2.png" alt="Suitcase Icon" className="suitcase-icon" />
         </div>
+        {/* Plus button for fall detection, same size as other icons, bigger image */}
+        <button
+          className="fall-plus-btn"
+          style={{
+            marginTop: 24,
+            width: 64,
+            height: 64,
+            borderRadius: '50%',
+            background: '#fff',
+            boxShadow: '0 2px 12px rgba(0,0,0,0.15)',
+            border: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000,
+            alignSelf: 'center',
+            padding: 0,
+          }}
+          aria-label="Fall Detection Emergency"
+          tabIndex={0}
+          onClick={() => alert('This button activates automatic fall detection using your phone’s sensors.')}
+        >
+          <img src="/image/plus.png" alt="Emergency Plus" style={{ width: 44, height: 44 }} />
+        </button>
       </div>
-
+      {/* Fall detection modal */}
+      {fallModalOpen && (
+        <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.4)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="modal-content" style={{ background: '#fff', borderRadius: 16, padding: 32, maxWidth: 350, textAlign: 'center', boxShadow: '0 2px 16px rgba(0,0,0,0.18)' }}>
+            <h2 style={{ color: '#c00', marginBottom: 16 }}>Possible Fall Detected</h2>
+            <p style={{ marginBottom: 16 }}>We detected a possible fall. If you do not cancel, we will call the nearest hospital in <b>{fallCountdown}</b> seconds.</p>
+            <button onClick={handleCancelFall} style={{ background: '#eee', color: '#222', border: 'none', borderRadius: 8, padding: '10px 28px', fontWeight: 600, fontSize: 16, cursor: 'pointer' }}>Cancel</button>
+          </div>
+        </div>
+      )}
       {showChat && (
         <>
           <div className="main-title-container">
