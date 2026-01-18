@@ -3,7 +3,7 @@ import '../styles/Main.css';
 
 interface Message {
   role: 'assistant' | 'user';
-  content: string | React.ReactNode;
+  content: string;
 }
 
 const Main: React.FC = () => {
@@ -14,6 +14,7 @@ const Main: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showChat, setShowChat] = useState(true);
   const [showMaps, setShowMaps] = useState(false);
+  const [categoryChosen, setCategoryChosen] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -49,23 +50,7 @@ const Main: React.FC = () => {
         role: 'assistant',
         content: data.long_paragraph || 'I received your message. Backend response pending.',
       };
-
-    // Second message (key words with bullet points)
-        const keywordsMessage: Message = {
-            role: 'assistant',
-            content: (
-                <>
-                  <p>Here is a summary of the key remedies:</p>
-                  <ul>
-                    {data.key_remedies.map((keyword: string, index: number) => (
-                      <li key={index}>{keyword}</li>
-                    ))}
-                  </ul>
-                </>
-              ),
-        };
-
-      setMessages((prev) => [...prev, assistantMessage, keywordsMessage]);
+      setMessages((prev) => [...prev, assistantMessage]);
     } catch (error) {
       console.error('Error fetching response:', error);
       const errorMessage: Message = {
@@ -73,6 +58,31 @@ const Main: React.FC = () => {
         content: 'Sorry, there was an error connecting to the server. Please try again.',
       };
       setMessages((prev) => [...prev, errorMessage]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleCategoryClick = async (category: string) => {
+    setCategoryChosen(category);
+    setIsLoading(true);
+    try {
+      const API_URL = process.env.REACT_APP_API_URL;
+      const response = await fetch(`${API_URL}/geminitest`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userInput: category }),
+      });
+      const data = await response.json();
+      const assistantMessage: Message = {
+        role: 'assistant',
+        content: data.long_paragraph || 'I received your message. Backend response pending.',
+      };
+      setMessages((prev) => [...prev, { role: 'user', content: category }, assistantMessage]);
+    } catch (error) {
+      setMessages((prev) => [...prev, { role: 'assistant', content: 'Sorry, there was an error connecting to the server. Please try again.' }]);
     } finally {
       setIsLoading(false);
     }
@@ -148,6 +158,17 @@ const Main: React.FC = () => {
           <div className="chat-container">
             <div className="chat-content">
             <div className="chat-messages">
+              {/* Category selection buttons at the top if not chosen yet */}
+              {!categoryChosen && (
+                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '32px 0' }}>
+                  <div style={{ fontWeight: 600, marginBottom: 16 }}>What is your main concern?</div>
+                  <div style={{ display: 'flex', gap: 16 }}>
+                  <button onClick={() => handleCategoryClick('trouble breathing')} style={{ padding: '12px 24px', fontSize: 16, borderRadius: 8, border: '1px solid #4c81b9', background: '#eaf3fb', cursor: 'pointer' }}>Trouble Breathing</button>
+                  <button onClick={() => handleCategoryClick('chest pain')} style={{ padding: '12px 24px', fontSize: 16, borderRadius: 8, border: '1px solid #4c81b9', background: '#eaf3fb', cursor: 'pointer' }}>Chest Pain</button>
+                  <button onClick={() => handleCategoryClick('bleeding')} style={{ padding: '12px 24px', fontSize: 16, borderRadius: 8, border: '1px solid #4c81b9', background: '#eaf3fb', cursor: 'pointer' }}>Bleeding</button>
+                </div>
+				</div>
+              )}
               {messages.map((message, index) => (
                 <div key={index} className={`message ${message.role}-message`}>
                   <div className="message-content">{message.content}</div>
