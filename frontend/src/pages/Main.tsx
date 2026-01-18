@@ -70,6 +70,23 @@ const Main: React.FC = () => {
         content: data.long_paragraph || 'I received your message. Backend response pending.',
       };
       setMessages((prev) => [...prev, assistantMessage]);
+
+    // Second message (key words with bullet points)
+        const keywordsMessage: Message = {
+            role: 'assistant',
+            content: (
+                <>
+                  <p  style={{ marginTop: '0px' }}>Here is a summary of the key remedies:</p>
+                  <ul  style={{ marginBottom: '3px' }}>
+                    {data.key_remedies.map((keyword: string, index: number) => (
+                      <li key={index}>{keyword}</li>
+                    ))}
+                  </ul>
+                </>
+              ),
+        };
+
+      setMessages((prev) => [...prev, assistantMessage, keywordsMessage]);
     } catch (error) {
       console.error('Error fetching response:', error);
       const errorMessage: Message = {
