@@ -220,9 +220,9 @@ const Main: React.FC = () => {
                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '32px 0' }}>
                   <div style={{ fontWeight: 600, marginBottom: 16 }}>What is your main concern?</div>
                   <div style={{ display: 'flex', gap: 16 }}>
-                  <button onClick={() => handleCategoryClick('trouble breathing')} style={{ padding: '12px 24px', fontSize: 16, borderRadius: 8, border: '1px solid #4c81b9', background: '#eaf3fb', cursor: 'pointer' }}>Trouble Breathing</button>
+                  <button onClick={() => handleCategoryClick('shortness of breath')} style={{ padding: '12px 24px', fontSize: 16, borderRadius: 8, border: '1px solid #4c81b9', background: '#eaf3fb', cursor: 'pointer' }}>Shortness of Breath</button>
                   <button onClick={() => handleCategoryClick('chest pain')} style={{ padding: '12px 24px', fontSize: 16, borderRadius: 8, border: '1px solid #4c81b9', background: '#eaf3fb', cursor: 'pointer' }}>Chest Pain</button>
-                  <button onClick={() => handleCategoryClick('bleeding')} style={{ padding: '12px 24px', fontSize: 16, borderRadius: 8, border: '1px solid #4c81b9', background: '#eaf3fb', cursor: 'pointer' }}>Bleeding</button>
+                  <button onClick={() => handleCategoryClick('continuous bleeding')} style={{ padding: '12px 24px', fontSize: 16, borderRadius: 8, border: '1px solid #4c81b9', background: '#eaf3fb', cursor: 'pointer' }}>Continuous Bleeding</button>
                 </div>
 				</div>
               )}
