@@ -1,0 +1,36 @@
+{
+  "model_name": "lokeshch19/ModernPubMedBERT",
+  "topics": [
+    "cardiovascular_emergencies",
+    "core_scope",
+    "gastrointestinal_emergencies",
+    "general_emergencies",
+    "genitourinary_emergencies",
+    "neurological_emergencies",
+    "obstetric_gynecologic_emergencies",
+    "trauma_related_emergencies",
+    "vascular_ischemic_emergencies"
+  ],
+  "representative_titles": [
+    "Early outcomes in re-do operation after acute type A aortic dissection: results from the multicenter REAAD database.",
+    "National estimates of predictors of outcomes for emergency general surgery.",
+    "Acute Intestinal Obstruction Revealing an Internal Hernia of the Broad Ligament Following Promontofixation: A Case Report.",
+    "Transverse colon volvulus: A case report of an uncommon cause of acute abdomen in pediatrics.",
+    "[Diagnosis and management of testicular torsion in children].",
+    "Acute Spontaneous Subdural Hematoma due to Rupture of a Tiny Cortical Arteriovenous Malformation.",
+    "[A second trimester ovarian ectopic pregnancy: A case report].",
+    "An unexpected finding of cardiac injury penetrating the diaphragm in a suspected abdominal trauma case.",
+    "Successful Treatment of Acute Limb Ischemia Secondary to Iatrogenic Distal Embolization Using Catheter Directed Aspiration Thrombectomy."
+  ],
+  "topic_files": [
+    "/Users/sungjunkim/nwhacks2026/nwhacks2026/pubmed_data_by_topics/processed_json/cardiovascular_emergencies.json",
+    "/Users/sungjunkim/nwhacks2026/nwhacks2026/pubmed_data_by_topics/processed_json/core_scope.json",
+    "/Users/sungjunkim/nwhacks2026/nwhacks2026/pubmed_data_by_topics/processed_json/gastrointestinal_emergencies.json",
+    "/Users/sungjunkim/nwhacks2026/nwhacks2026/pubmed_data_by_topics/processed_json/general_emergencies.json",
+    "/Users/sungjunkim/nwhacks2026/nwhacks2026/pubmed_data_by_topics/processed_json/genitourinary_emergencies.json",
+    "/Users/sungjunkim/nwhacks2026/nwhacks2026/pubmed_data_by_topics/processed_json/neurological_emergencies.json",
+    "/Users/sungjunkim/nwhacks2026/nwhacks2026/pubmed_data_by_topics/processed_json/obstetric_gynecologic_emergencies.json",
+    "/Users/sungjunkim/nwhacks2026/nwhacks2026/pubmed_data_by_topics/processed_json/trauma_related_emergencies.json",
+    "/Users/sungjunkim/nwhacks2026/nwhacks2026/pubmed_data_by_topics/processed_json/vascular_ischemic_emergencies.json"
+  ]
+}
