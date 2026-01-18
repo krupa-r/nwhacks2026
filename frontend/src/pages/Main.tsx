@@ -34,18 +34,20 @@ const Main: React.FC = () => {
 
     try {
       // TODO: Replace with your actual backend endpoint
-      const response = await fetch('http://localhost:8000/api/chat', {
+      const API_URL = process.env.REACT_APP_API_URL;
+      
+      const response = await fetch(`${API_URL}/openaiAPItest`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ message: userMessage.content }),
+        body: JSON.stringify({ userInput: userMessage.content }),
       });
 
       const data = await response.json();
       const assistantMessage: Message = {
         role: 'assistant',
-        content: data.response || 'I received your message. Backend response pending.',
+        content: data.long_paragraph || 'I received your message. Backend response pending.',
       };
       setMessages((prev) => [...prev, assistantMessage]);
     } catch (error) {
