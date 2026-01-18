@@ -113,7 +113,7 @@ const Main: React.FC = () => {
     if (!inputValue.trim() || isLoading) return;
   
     const userMessage: Message = { role: 'user', content: inputValue.trim() };
-    setMessages((prev) => [...prev, userMessage]);
+    setMessages((prev) => [...prev, userMessage]); // Add user message first
     setInputValue('');
     setIsLoading(true);
   
@@ -130,17 +130,15 @@ const Main: React.FC = () => {
   
       const data = await response.json();
   
+      // Add assistant message based on the response
       const assistantMessage: Message = {
         role: 'assistant',
         content: data.long_paragraph || 'I received your message. Backend response pending.',
       };
   
-      // Check if the assistant message already contains a long paragraph
-      if (data.long_paragraph && !messages.some(msg => msg.content === data.long_paragraph)) {
-        setMessages((prev) => [...prev, assistantMessage]);
-      }
+      setMessages((prev) => [...prev, assistantMessage]); // Add assistant message
   
-      // Second message (key words with bullet points)
+      // Add the second message (keywords with bullet points)
       const keywordsMessage: Message = {
         role: 'assistant',
         content: (
@@ -154,8 +152,8 @@ const Main: React.FC = () => {
           </>
         ),
       };
-
-      setMessages((prev) => [...prev, keywordsMessage]);
+  
+      setMessages((prev) => [...prev, keywordsMessage]); 
   
     } catch (error) {
       console.error('Error fetching response:', error);
@@ -163,11 +161,12 @@ const Main: React.FC = () => {
         role: 'assistant',
         content: 'Sorry, there was an error connecting to the server. Please try again.',
       };
-      setMessages((prev) => [...prev, errorMessage]);
+      setMessages((prev) => [...prev, errorMessage]); 
     } finally {
       setIsLoading(false);
     }
   };
+  
   
 
   const handleCategoryClick = async (category: string) => {
