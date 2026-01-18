@@ -3,7 +3,7 @@ import '../styles/Main.css';
 
 interface Message {
   role: 'assistant' | 'user';
-  content: string;
+  content: React.ReactNode;
 }
 
 const Main: React.FC = () => {
@@ -27,22 +27,27 @@ const Main: React.FC = () => {
   }, [messages]);
 
   // Voice synthesis for assistant responses
-  useEffect(() => {
-    if (messages.length === 0) return;
-    const lastMsg = messages[messages.length - 1];
-    if (lastMsg.role === 'assistant' && lastMsg.content && !isMuted) {
-      if ('speechSynthesis' in window) {
-        const utter = new window.SpeechSynthesisUtterance(lastMsg.content);
-        utter.rate = 1;
-        utter.pitch = 1;
-        utter.lang = 'en-US';
-        window.speechSynthesis.cancel(); // Stop any previous speech
-        window.speechSynthesis.speak(utter);
-      }
-    } else if (isMuted && 'speechSynthesis' in window) {
+ useEffect(() => {
+  if (messages.length === 0) return;
+
+  const lastMsg = messages[messages.length - 1];
+
+  // Only speak assistant messages, and only if the content is a string
+  if (lastMsg.role === 'assistant' && !isMuted) {
+    const text = typeof lastMsg.content === 'string' ? lastMsg.content : '';
+
+    if (text && 'speechSynthesis' in window) {
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.rate = 1;
+      utter.pitch = 1;
+      utter.lang = 'en-US';
       window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(utter);
     }
-  }, [messages, isMuted]);
+  } else if (isMuted && 'speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+  }
+}, [messages, isMuted]);
 
   const sendMessage = async () => {
     if (!inputValue.trim() || isLoading) return;
