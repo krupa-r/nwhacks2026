@@ -46,15 +46,16 @@
 }
 
 .needle-icon {
-  width: 120px;
-  height: 120px;
+  width: 140px;
+  height: 140px;
   object-fit: contain;
 }
 
-.suitcase-icon {
-  width: 120px;
-  height: 120px;
+.map-icon {
+  width: 40px;
+  height: 40px;
   object-fit: contain;
+
 }
 
 .main-title {
@@ -104,14 +105,25 @@
   width: 75vw;           
   max-width: 1200px;      
   margin: 0 auto;        
-  background: #ffffff;
+  background-image: url('../../public/image/background.webp');
+  background-size: cover;
+  background-position: center;
+  background-color: rgba(255, 255, 255, 80%);
   border-radius: 15px;
+  align-items: center;
+  justify-content: center;
 }
 
 .maps-content {
   flex: 1;
-  padding: 20px;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.70);
+  border-radius: 15px;
 }
 
 .chat-messages {
@@ -290,6 +302,73 @@
     transform: scale(1);
     opacity: 1;
   }
+}
+
+/* Address form styling */
+.address-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  margin-bottom: 20px;
+}
+
+.address-label-container {
+  background: #4c81b9;
+  padding: 14px 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: fit-content;
+  align-self: center;
+}
+
+.address-label {
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  display: block;
+  margin: 0;
+}
+
+.address-input {
+  width: 100%;
+  padding: 14px 18px;
+  font-size: 16px;
+  border: 2px solid #d1d5db;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+}
+
+.address-input:focus {
+  border-color: #4c81b9;
+  box-shadow: 0 0 0 3px rgba(76, 129, 185, 0.1);
+}
+
+.directions-button {
+  padding: 14px 28px;
+  font-size: 16px;
+  font-weight: 600;
+  background: #4c81b9;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+  align-self: center;
+}
+
+.directions-button:hover {
+  background: #3a6fa5;
+  transform: translateY(-1px);
+}
+
+.directions-button:active {
+  transform: translateY(0);
 }
 
 /* Mobile responsiveness */

@@ -8,7 +8,7 @@ interface Message {
 
 const Main: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([
-    { role: 'assistant', content: 'Please provide your emergency details' }
+    { role: 'assistant', content: 'Please provide your emergency details for assistance.' }
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -111,16 +111,15 @@ const Main: React.FC = () => {
 
   const sendMessage = async () => {
     if (!inputValue.trim() || isLoading) return;
-
+  
     const userMessage: Message = { role: 'user', content: inputValue.trim() };
     setMessages((prev) => [...prev, userMessage]);
     setInputValue('');
     setIsLoading(true);
-
+  
     try {
-      // TODO: Replace with your actual backend endpoint
       const API_URL = process.env.REACT_APP_API_URL;
-      
+  
       const response = await fetch(`${API_URL}/geminitest`, {
         method: 'POST',
         headers: {
@@ -128,30 +127,36 @@ const Main: React.FC = () => {
         },
         body: JSON.stringify({ userInput: userMessage.content }),
       });
-
+  
       const data = await response.json();
+  
       const assistantMessage: Message = {
         role: 'assistant',
         content: data.long_paragraph || 'I received your message. Backend response pending.',
       };
-      setMessages((prev) => [...prev, assistantMessage]);
+  
+      // Check if the assistant message already contains a long paragraph
+      if (data.long_paragraph && !messages.some(msg => msg.content === data.long_paragraph)) {
+        setMessages((prev) => [...prev, assistantMessage]);
+      }
+  
+      // Second message (key words with bullet points)
+      const keywordsMessage: Message = {
+        role: 'assistant',
+        content: (
+          <>
+            <p style={{ marginTop: '0px' }}>Here is a summary of the key remedies:</p>
+            <ul style={{ marginBottom: '3px' }}>
+              {data.key_remedies.map((keyword: string, index: number) => (
+                <li key={index}>{keyword}</li>
+              ))}
+            </ul>
+          </>
+        ),
+      };
 
-    // Second message (key words with bullet points)
-        const keywordsMessage: Message = {
-            role: 'assistant',
-            content: (
-                <>
-                  <p  style={{ marginTop: '0px' }}>Here is a summary of the key remedies:</p>
-                  <ul  style={{ marginBottom: '3px' }}>
-                    {data.key_remedies.map((keyword: string, index: number) => (
-                      <li key={index}>{keyword}</li>
-                    ))}
-                  </ul>
-                </>
-              ),
-        };
-
-      setMessages((prev) => [...prev, assistantMessage, keywordsMessage]);
+      setMessages((prev) => [...prev, keywordsMessage]);
+  
     } catch (error) {
       console.error('Error fetching response:', error);
       const errorMessage: Message = {
@@ -163,6 +168,7 @@ const Main: React.FC = () => {
       setIsLoading(false);
     }
   };
+  
 
   const handleCategoryClick = async (category: string) => {
     setCategoryChosen(category);
@@ -285,13 +291,12 @@ const Main: React.FC = () => {
           className={`icon-container ${showMaps ? 'active' : ''}`}
           onClick={handleSuitcaseClick}
         >
-          <img src="/image/Suitcase2.png" alt="Suitcase Icon" className="suitcase-icon" />
+          <img src="/image/Map.png" alt="Map Icon" className="map-icon" />
         </div>
         {/* Plus button for fall detection, same size as other icons, bigger image */}
         <button
           className="fall-plus-btn"
           style={{
-            marginTop: 24,
             width: 64,
             height: 64,
             borderRadius: '50%',
@@ -309,7 +314,7 @@ const Main: React.FC = () => {
           tabIndex={0}
           onClick={() => alert('This button activates automatic fall detection using your phone’s sensors.')}
         >
-          <img src="/image/plus.png" alt="Emergency Plus" style={{ width: 44, height: 44 }} />
+          <img src="/image/Suitcase2.png" alt="Hospital Support" style={{ width: 150, height: 150 }} />
         </button>
       </div>
       {/* Fall detection modal */}
@@ -325,7 +330,7 @@ const Main: React.FC = () => {
       {showChat && (
         <>
           <div className="main-title-container">
-            <h1 className="main-title">Emergency Health Assistant</h1>
+            <h1 className="main-title">SwiftAId Medical Assistance</h1>
           </div>
           <div className="chat-container">
             <div className="chat-content">
@@ -427,7 +432,7 @@ const Main: React.FC = () => {
       {showMaps && (
         <>
           <div className="main-title-container">
-            <h1 className="main-title">Locations</h1>
+            <h1 className="main-title">Directions to Medical Services</h1>
           </div>
           <div className="maps-container">
             <div className="maps-content">
