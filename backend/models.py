@@ -45,7 +45,7 @@ geminiClient = genai.Client(api_key=os.getenv("GEMINI_KEY"))  # explicit is fine
 def GeminiResponse(userInput: str):   
     fake_string = """{
       "long_paragraph": "...",
-      "key_words": ["...", "...", "..."]
+      "key_remedies": ["...", "...", "..."]
     }"""
 
     prompt = f"""
