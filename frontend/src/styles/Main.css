@@ -13,6 +13,7 @@
 .icons-wrapper {
   position: absolute;
   margin-left: 20px;
+  margin-top:20px;
   top: 20px;
   left: 20px;
   display: flex;
@@ -22,8 +23,8 @@
 }
 
 .icon-container {
-  width: 50px;
-  height: 50px;
+  width: 70px;
+  height: 70px;
   background: white;
   border-radius: 50%;
   display: flex;
@@ -45,14 +46,14 @@
 }
 
 .needle-icon {
-  width: 75px;
-  height: 75px;
+  width: 120px;
+  height: 120px;
   object-fit: contain;
 }
 
 .suitcase-icon {
-  width: 80px;
-  height: 80px;
+  width: 120px;
+  height: 120px;
   object-fit: contain;
 }
 
