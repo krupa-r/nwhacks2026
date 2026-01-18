@@ -25,6 +25,22 @@ const Main: React.FC = () => {
     scrollToBottom();
   }, [messages]);
 
+  // Voice synthesis for assistant responses
+  useEffect(() => {
+    if (messages.length === 0) return;
+    const lastMsg = messages[messages.length - 1];
+    if (lastMsg.role === 'assistant' && lastMsg.content) {
+      if ('speechSynthesis' in window) {
+        const utter = new window.SpeechSynthesisUtterance(lastMsg.content);
+        utter.rate = 1;
+        utter.pitch = 1;
+        utter.lang = 'en-US';
+        window.speechSynthesis.cancel(); // Stop any previous speech
+        window.speechSynthesis.speak(utter);
+      }
+    }
+  }, [messages]);
+
   const sendMessage = async () => {
     if (!inputValue.trim() || isLoading) return;
 
